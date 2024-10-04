@@ -15,6 +15,8 @@
             <img alt="" border="0" src="https://www.paypal.com/en_IT/i/scr/pixel.gif" width="1" height="1" />
         </form>
     </div>
-    <a class="back" onclick="window.history.go(-1); return false;">GO BACK</a>
+    <script>
+        document.write('<a class="back" href="' + document.referrer + '">GO BACK</a>');
+    </script>
 </body>
 </html>
