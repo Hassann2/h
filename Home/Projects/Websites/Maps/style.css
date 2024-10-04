@@ -1,0 +1,47 @@
+*{
+    box-sizing: border-box;
+    transition: .3s all ease-in-out;
+}
+
+#canvas-for-googlemap img{
+    max-height:none;
+    max-width:none!important;
+    background:none!important;
+}
+
+body{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+#city, #street{
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 2px 2px 2px gray;
+    overflow: hidden;
+    margin: 5px;
+}
+
+#city{
+    margin-bottom: 20px;
+}
+
+#send{
+    padding: 15px;
+    font-size: 15pt;
+    font-weight: bold;
+    background-color: rgb(2, 167, 2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: inset 2px 2px 2px gray;
+    cursor: pointer;
+}
+
+#send:hover{
+    box-shadow: 2px 2px 2px gray;
+    background-color: rgb(2, 95, 2);
+}
