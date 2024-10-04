@@ -682,10 +682,6 @@ footer span a:hover {
 }
   
 @media (max-width: 947px) {
-    .home{
-        position: relative;
-        top: -6%;
-    }
     .menu-btn {
       display: block;
       z-index: 999;
