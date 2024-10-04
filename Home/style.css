@@ -5,16 +5,44 @@
     padding: 0;
     box-sizing: border-box;
     text-decoration: none;
-    color: #000;
 }
 
 html {
     height: 100%;
-      --s: 150px; /* control the size */
-
-  background: linear-gradient(135deg, #0000 18.75%, #5e412f 0 31.25%, #0000 0),
-    repeating-linear-gradient(45deg, #5e412f -6.25% 6.25%, #fcebb6 0 18.75%);
-  background-size: var(--s) var(--s);
+	--u: 2vmin;
+	--c1: #c59b8b;
+	--c2: #a57462;
+	--c3: #795548;
+	--c4: #523b33;
+	--gp: 50% / calc(var(--u) * 10) calc(var(--u) * 10);
+	height: 100vh;
+	background: conic-gradient(
+				from 119deg at 56% 76%,
+				var(--c2) 0 66deg,
+				var(--c4) 0 128deg,
+				#fff0 0 360deg
+			)
+			var(--gp),
+		conic-gradient(
+				from 186deg at 8% 25.25%,
+				var(--c4) 0 65deg,
+				var(--c3) 0 157deg,
+				#fff0 0 360deg
+			)
+			var(--gp),
+		conic-gradient(
+				from -45deg at 50% 50%,
+				var(--c4) 0 49.5deg,
+				var(--c2) 0 90deg,
+				var(--c3) 0 111.25deg,
+				var(--c4) 0 180.1deg,
+				#fff0 0 212deg,
+				var(--c3) 0 270deg,
+				var(--c2) 0 345.5deg,
+				#fff0 0 360deg
+			)
+			var(--gp),
+		var(--c1);
 
 }
 
