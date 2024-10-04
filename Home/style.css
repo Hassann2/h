@@ -9,6 +9,11 @@
 
 html {
     height: 100%;
+      --s: 150px; /* control the size */
+
+  background: linear-gradient(135deg, #0000 18.75%, #5e412f 0 31.25%, #0000 0),
+    repeating-linear-gradient(45deg, #5e412f -6.25% 6.25%, #fcebb6 0 18.75%);
+  background-size: var(--s) var(--s);
 
 }
 
@@ -31,37 +36,6 @@ body {
   
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
-
-.bg {
-    animation: slide 5s ease-in-out infinite alternate;
-    background-image: linear-gradient(-60deg, #1b2735 50%, #090a0f 50%);
-    bottom: 0;
-    left: -50%;
-    opacity: 0.5;
-    position: fixed;
-    right: -50%;
-    top: 0;
-    z-index: -1;
-}
-
-.bg2 {
-    animation-direction: alternate-reverse;
-    animation-duration: 5s;
-}
-  
-.bg3 {
-    animation-duration: 5s;
-}
-
-@keyframes slide {
-    0% {
-      transform: translateX(-25%);
-    }
-
-    100% {
-      transform: translateX(25%);
-    }
 }
 
 .card{
