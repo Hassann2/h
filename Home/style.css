@@ -663,10 +663,6 @@ footer span a:hover {
     text-decoration: underline;
 }
 
-.VIpgJd-ZVi9od-ORHb-OEVmcd.skiptranslate{
-    z-index: -9999;
-}
-
 /* responsive media query start */
 @media (max-width: 1104px) {
     .about .about-content .left img {
@@ -767,10 +763,6 @@ footer span a:hover {
     .contact .contact-content .column{
         width: 100%;
         margin-bottom: 35px;
-    }
-
-    .VIpgJd-ZVi9od-aZ2wEe-wOHMyf.VIpgJd-ZVi9od-aZ2wEe-wOHMyf-ti6hGc{
-        display: none;
     }
 }
 
