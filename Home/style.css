@@ -654,13 +654,9 @@ footer {
     text-align: center;
 }
   
-footer span a {
+footer span strong {
     color: crimson;
     text-decoration: none;
-}
-  
-footer span a:hover {
-    text-decoration: underline;
 }
 
 /* responsive media query start */
