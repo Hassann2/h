@@ -274,8 +274,6 @@ section .title{
     background-attachment: fixed;
     font-family: 'Ubuntu', sans-serif;
     animation: rotate 3s ease-in-out;
-    position: relative;
-    top: -6%;
 }
 
 .home .width {
