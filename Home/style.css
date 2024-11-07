@@ -75,6 +75,7 @@ footer{
 
 .about .about-content,
 .skills .skills-content,
+.services .serv-content,
 .contact .contact-content{
     display: flex;
     flex-wrap: wrap;
