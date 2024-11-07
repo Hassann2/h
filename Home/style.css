@@ -74,7 +74,6 @@ footer{
 }
 
 .about .about-content,
-.services .serv-content,
 .skills .skills-content,
 .contact .contact-content{
     display: flex;
@@ -395,7 +394,6 @@ section .title{
 .skills{
     border-top: 4px solid #fff;
 }
-
 
 .skills .skills-content .column {
     width: calc(50% - 30px);
