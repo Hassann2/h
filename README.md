@@ -1,7 +1,7 @@
 # Hassan
 Good morning !! I'm Hassan, a hobby programmer. This portfolio collects my most recent projects and my skills. Check out my work and contact me if you want to collaborate.
 
-<p style="font-weight: bold; font-family: cursive;">To contact me:</p>
+<p class="text">To contact me:</p>
 
 📧: <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a>
 <br>
@@ -13,3 +13,10 @@ To visit my site click on this link: <a href="https://portfoliioo.github.io/h/">
 Or scan this QR code
 
 <img src="images/QRCode.png" width="220" height="220">
+
+<style>
+  .text{
+    font-weight: bold;
+    font-family: cursive;
+  }
+</style>
