@@ -5,4 +5,4 @@ To visit my site click on this link: <a href="https://portfoliioo.github.io/h/">
 
 Or scan this QR code
 
-<img src="images/QRCode.png" width="100" height="100">
+<img src="images/QRCode.png" width="150" height="150">
