@@ -1,12 +1,3 @@
-<?php
-session_start();
-if(!isset($_SESSION['logged']) || $_SESSION['logged'] !== true){
-    header("Location: https://codingapp.net/login_page");
-    exit;
-};
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
