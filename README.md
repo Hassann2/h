@@ -3,7 +3,7 @@ Good morning !! <br><br>I'm Hassan, a hobby programmer. This portfolio collects 
 
 <strong>To contact me:</strong>
 
-<strong>Email 📧:</strong> <a href="mailto: allamhassan684@gmail.com"><strong>$${\color{white}allamhassan684@gmail.com}$$</strong></a>
+<strong>Email 📧:</strong> <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a>
 <br>
 <br>
 Instagram 📷: <a href="https://www.instagram.com/hassuna_05/"><strong>Instagram</strong></a>
