@@ -3,7 +3,9 @@ Good morning !! I'm Hassan, a hobby programmer. This portfolio collects my most 
 
 To contact me:
 
-📧: <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a><br>
+📧: <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a>
+<br>
+<br>
 📷: <a href="https://www.instagram.com/hassuna_05/"><strong>Instagram</strong></a>
 
 To visit my site click on this link: <a href="https://portfoliioo.github.io/h/"><strong>Click Here !!</strong></a>
