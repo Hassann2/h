@@ -14,11 +14,14 @@
         # write your python code here
     </script>
 
-
     <script>
-        import js
+        // Funzione per gestire il timeout
+        function showMessage(msg) {
+            console.log(msg);
+        }
 
-        js.setTimeout(lambda msg: print(msg), 1000, "FAIL")
+        // Imposta un timeout per chiamare la funzione dopo 1 secondo
+        setTimeout(() => showMessage("FAIL"), 1000);
     </script>
 </body>
 </html>
