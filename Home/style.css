@@ -9,7 +9,7 @@
 
 html {
 	height: 100vh;
-	background-color: #fff;
+	background-color: #000;
 }
 
 body {
@@ -34,7 +34,7 @@ body {
 }
 
 .card{
-    color: #000;
+    color: #fff;
 }
 
 .page{
@@ -69,7 +69,7 @@ section{
 .contact,
 footer{
     font-family: 'Poppins', sans-serif;
-    color: #000;
+    color: #fff;
 }
 
 .about .about-content,
@@ -120,7 +120,7 @@ section .title{
 }
 
 .navbar .logo a {
-    color: #000;
+    color: #fff;
     font-size: 35px;
     font-weight: 600;
 }
@@ -133,7 +133,7 @@ section .title{
 
 .navbar .menu li a {
     display: block;
-    color: #000;
+    color: #fff;
     font-size: 18px;
     font-weight: 500;
     margin-left: 25px;
