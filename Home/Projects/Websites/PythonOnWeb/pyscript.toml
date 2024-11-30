@@ -1,0 +1,2 @@
+packages = ["numpy", "beautifulsoup4", "requests"]
+name = "Installing packages using py-config Copy"
