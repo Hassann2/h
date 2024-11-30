@@ -10,10 +10,13 @@
     <title>Pyscript</title>
 </head>
 <body>
-    <py-config src="./pyscript.toml"></py-config>
-    <py-script type="mpy-editor" env="test_env">
-        # Run your python code here
-    </py-script>
+    <script type="mpy-editor" env="test_env" setup>
+        packages = ['os']
+    </script>
+    <script type="mpy-editor" env="test_env">
+        # write your python code here
+    </script>
+
 
     <script>
         import js
