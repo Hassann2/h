@@ -10,22 +10,12 @@
     <title>Pyscript</title>
 </head>
 <body>
-      <py-config type="toml">
-    packages = ["numpy", "beautifulsoup4", "requests"]
-  </py-config>
+    <py-script>
+        import sys
+        from pyscript import display
+          
+        display(sys.version)
+    </py-script>
 
-  <py-script>
-        import numpy as np
-        import requests
-        import bs4
-        from bs4 import BeautifulSoup
-
-        print(bs4.__version__)
-        print(requests.__version__)
-
-        a = np.array([1, 2, 3])
-        print("Array:", a)
-        print("Hello from Python in the browser!")
-  </py-script>
 </body>
 </html>
