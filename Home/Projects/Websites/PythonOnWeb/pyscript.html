@@ -10,12 +10,10 @@
     <title>Pyscript</title>
 </head>
 <body>
-    <py-script>
-        import sys
-        from pyscript import display
-          
-        display(sys.version)
-    </py-script>
-
+    <script type="mpy-editor" target="editor" config='{"packages":["numpy"]}'>
+      import sys
+      print(sys.version)
+    </script>
+    <div id="editor"></div> <!-- will eventually contain the Python editor -->
 </body>
 </html>
