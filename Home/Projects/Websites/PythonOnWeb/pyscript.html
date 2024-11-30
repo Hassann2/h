@@ -10,18 +10,12 @@
     <title>Pyscript</title>
 </head>
 <body>
-    <script type="mpy-editor" env="test_env" config="./pyscript.toml">
-        # write your python code here
-    </script>
-
-    <script>
-        // Funzione per gestire il timeout
-        function showMessage(msg) {
-            console.log(msg);
-        }
-
-        // Imposta un timeout per chiamare la funzione dopo 1 secondo
-        setTimeout(() => showMessage("FAIL"), 1000);
-    </script>
+    <py-env>
+      - numpy
+    </py-env>
+    <py-script>
+        import numpy as np
+        print(np.random.randn(10, 4))
+    </py-script>
 </body>
 </html>
