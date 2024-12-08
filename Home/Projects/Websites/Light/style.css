@@ -19,7 +19,7 @@ body{
 }
 
 @media screen and (min-width: 720px) {
-    .player video {
+    .player iframe {
       width: 600px;
       height: 400px;
     }
