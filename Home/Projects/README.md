@@ -5,4 +5,5 @@ Ah, I forgot, if you want to take a little look at my site you can find the link
 
 <strong>Or you can scan this QRCode<strong>
 <br>
+<br>
 <img src="https://github.com/portfoliioo/h/blob/main/images/QRCode.png" width="220" height="220">
