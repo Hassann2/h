@@ -2,19 +2,19 @@ import tkinter as tk
 from tkinter import *
 from win32api import GetSystemMetrics
 
-class Calcolatrice:
+class Calculator:
     def __init__(self, master):
         self.master = master
-        master.title("Calcolatrice")
+        master.title("Calculator")
         master.configure(bg="#2E2E2E")
 
-        # Imposta le dimensioni minime e massime della finestra
-        master.minsize(300, 400)  # Dimensioni minime (larghezza, altezza)
+        # Set the minimum and maximum window size
+        master.minsize(300, 400)  
         self.max_width = GetSystemMetrics(0)
         self.max_height = GetSystemMetrics(1)
-        master.maxsize(self.max_width, self.max_height)  # Dimensioni massime (larghezza, altezza)
+        master.maxsize(self.max_width, self.max_height)  
 
-        # Configurazione della griglia per il ridimensionamento
+        # Grid setup for scaling
         master.grid_rowconfigure(0, weight=1)
         for i in range(1, 7):
             master.grid_rowconfigure(i, weight=1)
@@ -28,13 +28,11 @@ class Calcolatrice:
         
         self.crea_pulsanti()
 
-        # Aggiungi un evento per la chiave Escape per uscire dalla modalità a schermo intero
+        # Add an event for the Escape key to exit fullscreen mode
         master.bind("<Escape>", self.toggle_fullscreen)
 
-        # Variabile per tenere traccia dello stato a schermo intero
         self.fullscreen = False
 
-        # Bind per il pulsante di massimizzazione
         master.bind("<Configure>", self.on_resize)
 
     def crea_pulsanti(self):
@@ -51,11 +49,11 @@ class Calcolatrice:
                 colonna = i % 4
                 tk.Button(self.master, text=pulsante, font=('Arial', 18),
                           bg="#4CAF50", fg="#FFFFFF", activebackground="#45a049",
-                          cursor="hand2",  # Cambia il cursore in una mano
+                          cursor="hand2",
                           command=lambda p=pulsante: self.premi_pulsante(p)).grid(row=riga, column=colonna, padx=5, pady=5, sticky="nsew")
 
     def on_resize(self, event):
-        # Controlla se la finestra è massimizzata
+       # Check if the window is maximized
         if self.master.winfo_width() >= self.max_width and self.master.winfo_height() >= self.max_height:
             if self.master.winfo_width() >= self.master.winfo_screenwidth() and self.master.winfo_height() >= self.master.winfo_screenheight():
                 self.toggle_fullscreen()
@@ -68,11 +66,11 @@ class Calcolatrice:
         self.master.attributes("-fullscreen", self.fullscreen)
 
         if self.fullscreen:
-            # Nascondi la barra del titolo e le dimensioni della finestra
+            # Hide the title bar and window size
             self.master.overrideredirect(True)
             self.master.geometry(f"{self.master.winfo_screenwidth()}x{self.master.winfo_screenheight()}+0+0")
         else:
-            # Ripristina le dimensioni massime e mostra la barra del titolo
+            # Restore maximum size and show title bar
             self.master.overrideredirect(False)
             self.master.geometry(f"{self.max_width}x{self.max_height}+0+0")
 
@@ -97,7 +95,7 @@ class Calcolatrice:
 if __name__ == "__main__":
     root = tk.Tk()
     img = PhotoImage(file='Calculator-icon.png')
-    calcolatrice = Calcolatrice(root)
+    calculator = Calculator(root)
     root.iconphoto(False, img)
     root.mainloop()
 
