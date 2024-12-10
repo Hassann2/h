@@ -28,9 +28,7 @@ class Calculator:
 
         # Add an event for the Escape key to exit fullscreen mode
         master.bind("<Escape>", self.toggle_fullscreen)
-
         self.fullscreen = False
-
         master.bind("<Configure>", self.on_resize)
 
     def create_buttons(self):
