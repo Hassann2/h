@@ -21,12 +21,11 @@ class Calculator:
         for j in range(5):
             master.grid_columnconfigure(j, weight=1)
         
+        self.entry = tk.Entry(master, font=('Arial', 24), borderwidth=2, relief="solid", bg="#FFFFFF", fg="#000000", cursor="")
+        self.entry.bindtags(("all"))
+        self.entry.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
         
-        self.entrata = tk.Entry(master, font=('Arial', 24), borderwidth=2, relief="solid", bg="#FFFFFF", fg="#000000", cursor="")
-        self.entrata.bindtags(("all"))
-        self.entrata.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
-        
-        self.crea_pulsanti()
+        self.create_buttons()
 
         # Add an event for the Escape key to exit fullscreen mode
         master.bind("<Escape>", self.toggle_fullscreen)
@@ -35,8 +34,8 @@ class Calculator:
 
         master.bind("<Configure>", self.on_resize)
 
-    def crea_pulsanti(self):
-        pulsanti = [
+    def create_buttons(self):
+        buttons = [
             '7', '8', '9', '/',
             '4', '5', '6', '*',
             '1', '2', '3', '-',
@@ -44,16 +43,16 @@ class Calculator:
             'C'
         ]
     
-        for i, pulsante in enumerate(pulsanti):
-                riga = (i // 4) + 1
-                colonna = i % 4
-                tk.Button(self.master, text=pulsante, font=('Arial', 18),
-                          bg="#4CAF50", fg="#FFFFFF", activebackground="#45a049",
-                          cursor="hand2",
-                          command=lambda p=pulsante: self.premi_pulsante(p)).grid(row=riga, column=colonna, padx=5, pady=5, sticky="nsew")
+        for i, button in enumerate(buttons):
+            row = (i // 4) + 1
+            column = i % 4
+            tk.Button(self.master, text=button, font=('Arial', 18),
+                      bg="#4CAF50", fg="#FFFFFF", activebackground="#45a049",
+                      cursor="hand2",
+                      command=lambda b=button: self.press_button(b)).grid(row=row, column=column, padx=5, pady=5, sticky="nsew")
 
     def on_resize(self, event):
-       # Check if the window is maximized
+        # Check if the window is maximized
         if self.master.winfo_width() >= self.max_width and self.master.winfo_height() >= self.max_height:
             if self.master.winfo_width() >= self.master.winfo_screenwidth() and self.master.winfo_height() >= self.master.winfo_screenheight():
                 self.toggle_fullscreen()
@@ -74,23 +73,23 @@ class Calculator:
             self.master.overrideredirect(False)
             self.master.geometry(f"{self.max_width}x{self.max_height}+0+0")
 
-    def premi_pulsante(self, pulsante):
-        if pulsante == '=':
+    def press_button(self, button):
+        if button == '=':
             try:
-                espressione = self.entrata.get()
-                risultato = str(eval(espressione))
-                self.entrata.delete(0, tk.END)
-                self.entrata.insert(0, risultato)
+                expression = self.entry.get()
+                result = str(eval(expression))
+                self.entry.delete(0, tk.END)
+                self.entry.insert(0, result)
             except Exception as e:
-                self.entrata.delete(0, tk.END)
-                self.entrata.insert(0, "Errore")
-        elif pulsante == 'C':
-            self.cancella()
+                self.entry.delete(0, tk.END)
+                self.entry.insert(0, "Error")
+        elif button == 'C':
+            self.clear()
         else:
-            self.entrata.insert(tk.END, pulsante)
+            self.entry.insert(tk.END, button)
 
-    def cancella(self):
-        self.entrata.delete(0, tk.END)
+    def clear(self):
+        self.entry.delete(0, tk.END)
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -98,5 +97,3 @@ if __name__ == "__main__":
     calculator = Calculator(root)
     root.iconphoto(False, img)
     root.mainloop()
-
-
