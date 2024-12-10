@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import *
 from win32api import GetSystemMetrics
 
 class Calculator:
@@ -29,7 +28,9 @@ class Calculator:
 
         # Add an event for the Escape key to exit fullscreen mode
         master.bind("<Escape>", self.toggle_fullscreen)
+
         self.fullscreen = False
+
         master.bind("<Configure>", self.on_resize)
 
     def create_buttons(self):
@@ -91,7 +92,5 @@ class Calculator:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    img = PhotoImage(file='Calculator-icon.png')
     calculator = Calculator(root)
-    root.iconphoto(False, img)
     root.mainloop()
