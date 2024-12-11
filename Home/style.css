@@ -797,15 +797,6 @@ footer span strong {
     .contact .contact-content .text{
         text-align: center;
     }
-
-    .profile_btn
-}
-
-.google_tr{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
 }
 
 .goog-te-combo{
@@ -816,10 +807,4 @@ footer span strong {
     border-radius: 5px;
     outline: none;
     cursor: pointer;
-}
-
-#google_translate_element{
-    background: #fff;
-    text-align: center;
-    border-radius: 5px;
 }
