@@ -88,7 +88,3 @@ $(document).ready(function(){
 $('.profile_btn').click(function(){
     $('#arrow_up_btn').toggleClass("active");
 })
-
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-}
