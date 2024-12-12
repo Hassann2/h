@@ -247,6 +247,7 @@ section .title{
     min-height: 500px;
     background-size: cover;
     background-attachment: fixed;
+    background-position: bottom;
     font-family: 'Ubuntu', sans-serif;
     animation: rotate 3s ease-in-out;
 }
