@@ -249,6 +249,11 @@ section .title{
     animation: rotate 3s ease-in-out;
 }
 
+#bg_photo{
+    z-index: -999;
+    width: 100%;
+}
+
 .home .width {
     width: 100%;
     display: flex;
