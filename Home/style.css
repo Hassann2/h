@@ -240,7 +240,6 @@ section .title{
 /* home section styling */
 .home {
     display: flex;
-    background: url("https://getwallpapers.com/wallpaper/full/1/4/d/275095.jpg") no-repeat center;
     height: 100vh;
     color: #fff;
     min-height: 500px;
