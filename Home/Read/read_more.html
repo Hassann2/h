@@ -37,11 +37,30 @@
                 </div>
                 <ul class="menu">
                     <li>
-                    <a href="#" class="menu-btn">Home</a></li>
-                    <li><a href="#" class="menu-btn">About</a></li>
-                    <li><a href="#" class="menu-btn">Services</a></li>
-                    <li><a href="#" class="menu-btn">Skills</a></li>
-                    <li><a href="#" class="menu-btn">Contact</a></li>
+                      <script>
+                        document.write('<a class="menu-btn" href="' + document.referrer + '#home' + '">Home</a>');
+                      </script>
+                    </li>
+                    <li>
+                      <script>
+                        document.write('<a class="menu-btn" href="' + document.referrer + '#about' + '">About</a>');
+                      </script>
+                    </li>
+                    <li>
+                      <script>
+                        document.write('<a class="menu-btn" href="' + document.referrer + '#services' + '">Services</a>');
+                      </script>
+                    </li>
+                    <li>
+                      <script>
+                        document.write('<a class="menu-btn" href="' + document.referrer + '#skills' + '">Skills</a>');
+                      </script>
+                    </li>
+                    <li>
+                      <script>
+                        document.write('<a class="menu-btn" href="' + document.referrer + '#contact' + '">Contact</a>');
+                      </script>
+                    </li>
                 </ul>
                 <div class="menu-btn">
                     <i class="fas fa-bars"></i>
