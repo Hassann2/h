@@ -1,16 +1,10 @@
 //Home Page
-const white_logo = document.getElementById('Logo_W');
-const black_logo = document.getElementById('Logo_B');
 var screen_width = window.matchMedia("(max-width: 947px)");
 function ScreenCheck(screen_width){
     if (screen_width.matches && this.scrollY > 20) {
         $('.navbar').addClass("sticky");
-        white_logo.style.display = "none";
-        black_logo.style.display = "block";
     } else {
         $('.navbar').removeClass("sticky");
-        white_logo.style.display = "block";
-        black_logo.style.display = "none";
     }
     if(this.scrollY > 200 && screen_width.matches){
         $('.scroll-up-btn').addClass("show");
@@ -31,12 +25,8 @@ $(document).ready(function(){
 
         if (this.scrollY > 20) {
             $('.navbar').addClass("sticky");
-            white_logo.style.display = "none";
-            black_logo.style.display = "block";
         } else {
             $('.navbar').removeClass("sticky");
-            white_logo.style.display = "block";
-            black_logo.style.display = "none";
         }
 
         // scroll-up button show/hide script
