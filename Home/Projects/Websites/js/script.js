@@ -1,3 +1,4 @@
+/*
 window.addEventListener("load", (event) => {
     const rand = () => Math.random().toString(36).substr(2);
     const token = (length) => (rand() + rand() + rand() + rand()).substr(0, length);
@@ -7,6 +8,7 @@ window.addEventListener("load", (event) => {
         currentLocation.href = currentLocation + '?token=' + token(40);
     }
 });
+*/
 var swiper = new Swiper(".slide-content", {
     slidesPerView: 3,
     spaceBetween: 25,
