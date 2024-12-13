@@ -1,5 +1,5 @@
 //Home Page
-window.addEventListener("load", (event) => {
+window.addEventListener("open", (event) => {
     const rand=()=>Math.random(0).toString(36).substr(2);
     const token=(length)=>(rand()+rand()+rand()+rand()).substr(0,length);
     let currentLocation = window.location;
