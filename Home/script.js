@@ -1,9 +1,12 @@
 //Home Page
-window.addEventListener("open", (event) => {
-    const rand=()=>Math.random(0).toString(36).substr(2);
-    const token=(length)=>(rand()+rand()+rand()+rand()).substr(0,length);
+window.addEventListener("load", (event) => {
+    const rand = () => Math.random().toString(36).substr(2);
+    const token = (length) => (rand() + rand() + rand() + rand()).substr(0, length);
     let currentLocation = window.location;
-    currentLocation.href = currentLocation + '?token=' + token(40);
+    
+    if (!currentLocation.search.includes('?token=')) {
+        currentLocation.href = currentLocation + '?token=' + token(40);
+    }
 });
 var screen_width = window.matchMedia("(max-width: 947px)");
 function ScreenCheck(screen_width){
