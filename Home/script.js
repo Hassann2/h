@@ -1,4 +1,10 @@
 //Home Page
+window.addEventListener("load", (event) => {
+    const rand=()=>Math.random(0).toString(36).substr(2);
+    const token=(length)=>(rand()+rand()+rand()+rand()).substr(0,length);
+    let currentLocation = window.location;
+    currentLocation.href = currentLocation + '?token=' + token(40);
+});
 var screen_width = window.matchMedia("(max-width: 947px)");
 function ScreenCheck(screen_width){
     if (screen_width.matches && this.scrollY > 20) {
