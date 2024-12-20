@@ -355,7 +355,7 @@ section .title{
 }
   
 .about .about-content .right a:hover {
-    color: crimson;
+    color: #fff;
     background: black;
 }
 
