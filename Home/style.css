@@ -629,8 +629,8 @@ section .title{
 }
 
 .right form .button-area button:hover {
-    color: crimson;
-    background: none;
+    color: #fff;
+    background: #000;
 }
 
 /* footer section styling */
