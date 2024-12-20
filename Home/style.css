@@ -63,9 +63,23 @@ section{
 .services,
 .skills,
 .contact,
-footer{
+footer, .up_cookies{
     font-family: 'Poppins', sans-serif;
     color: #fff;
+    background: linear-gradient(-45deg, #c4674b, #ac2f5f, #1a7292, #1ca182);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 .about .about-content,
