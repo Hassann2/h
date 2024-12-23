@@ -1,80 +1,61 @@
-//Home Page
-var screen_width = window.matchMedia("(max-width: 947px)");
-function ScreenCheck(screen_width){
-    if (screen_width.matches && this.scrollY > 20) {
-        $('.navbar').addClass("sticky");
-    } else {
-        $('.navbar').removeClass("sticky");
-    }
-    if(this.scrollY > 200 && screen_width.matches){
-        $('.scroll-up-btn').addClass("show");
-        $('.scroll-up-btn').removeClass("hidden");
-    }else{
-        $('.scroll-up-btn').removeClass("show");
-        $('.scroll-up-btn').removeClass("hidden");
+//Toggling Menu
+const showMenu = (toggleId, navId) => {
+    const toggle = document.getElementById(toggleId);
+    const nav = document.getElementById(navId);
+
+    if(toggle && nav) {
+        toggle.addEventListener('click', () => {
+            nav.classList.toggle('show');
+        })
     }
 }
 
-ScreenCheck(screen_width);
-screen_width.addEventListener("change", function() {
-    ScreenCheck(screen_width);
-});
+showMenu('nav-toggle', 'nav-menu');
 
-$(document).ready(function(){
-    $(window).scroll(function(){
+//Toggling Active Link
+const navLink = document.querySelectorAll('.nav-link');
 
-        if (this.scrollY > 20) {
-            $('.navbar').addClass("sticky");
-        } else {
-            $('.navbar').removeClass("sticky");
-        }
+function linkAction() {
+    navLink.forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
 
-        // scroll-up button show/hide script
-        if(this.scrollY > 200){
-            $('.scroll-up-btn').addClass("show");
-            $('.scroll-up-btn').removeClass("hidden");
-        }else{
-            $('.scroll-up-btn').removeClass("show");
-            $('.scroll-up-btn').removeClass("hidden");
-        }
-    });
+    const navMenu = document.getElementById('nav-menu');
+    navMenu.classList.remove('show');
+}
 
-    // slide-up script
-    $('.scroll-up-btn').click(function(){
-        $('html').animate({ scrollTop: 0 });
-        // removing smooth scroll on slide-up button click
-        $('html').css("scrollBehavior", "auto");
-    });
+navLink.forEach(n => n.addEventListener('click', linkAction));
 
-    $('.navbar .menu li a').click(function(){
-        // applying again smooth scroll on menu items click
-        $('html').css("scrollBehavior", "smooth");
-    });
+// Scroll Reveal
 
-    // toggle menu/navbar script
-    $('.menu-btn').click(function(){
-        $('.navbar .menu').toggleClass("active");
-        $('.menu-btn i').toggleClass("active");
-        $('.scroll-up-btn').addClass("hidden");
-    });
-
-    // typing text animation script
-    var typed = new Typed(".typing", {
-        strings: ["Web Developer", " Game Developer", "Photo Editor", "Video Editor", "Gamer"],
-        typeSpeed: 120,
-        backSpeed: 80,
-        loop: true
-    });
-
-    var typed = new Typed(".typing-2", {
-        strings: ["Web Developer", " Game Developer", "Photo Editor", "Video Editor", " Gamer"],
-        typeSpeed: 120,
-        backSpeed: 80,
-        loop: true
-    });
-});
-
-//Deactivate Up-Arrow Menu
-$('.profile_btn').click(function(){
-    $('#arrow_up_btn').toggleClass("active");
+const sr = ScrollReveal({
+    origin: 'top',
+    distance: '80px',
+    duration: 2000,
+    reset: true
 })
+
+sr.reveal('.home-title', {} )
+sr.reveal('.button', {delay: 200} )
+sr.reveal('.home-img', {delay: 400} )
+sr.reveal('.home-social', {delay: 400,} )
+
+sr.reveal('.about-img', {} )
+sr.reveal('.about-subtitle', {delay: 200} )
+sr.reveal('.about-text', {delay: 400} )
+
+sr.reveal('.skills-subtitle', {delay: 100} )
+sr.reveal('.skills-text', {delay: 150} )
+sr.reveal('.skills-data', {interval: 200} )
+sr.reveal('.skills-img', {delay: 400} )
+
+sr.reveal('.work-img', {interval: 200} )
+
+sr.reveal('.contact-input', {interval: 200} )
+
+// typing text animation script
+var typed = new Typed(".typing", {
+    strings: ["Web Developer", " Game Developer", "Photo Editor", "Video Editor", "Gamer"],
+    typeSpeed: 120,
+    backSpeed: 80,
+    loop: true
+});
