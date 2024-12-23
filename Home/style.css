@@ -209,7 +209,7 @@ img {
 .home-social-icon {
     width: max-content;
     margin-bottom: var(--mb2);
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--second-color);
     transition: .3s;
 }
