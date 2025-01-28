@@ -27,4 +27,4 @@
 <strong>For the code click here:</strong>
 <br>
 <br>
-<strong>This is the link for the video tutorial:</strong><a href="https://youtu.be/ZoaUlquC6x8" target="_blank">Link</a>
+<strong>This is the link for the video tutorial: </strong><a href="https://youtu.be/ZoaUlquC6x8" target="_blank">Link</a>
