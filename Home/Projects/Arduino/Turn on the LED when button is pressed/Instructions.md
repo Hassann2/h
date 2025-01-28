@@ -12,7 +12,7 @@
 <br>
 <img src="arduino_led_push_button-1024x505.png">
 <br>
-<strong>Step by step instructions to build the circuit:</strong>
+<strong>Instructions to build the circuit:</strong>
 <br>
 <br>
 <li>First, make sure to power off your Arduino – remove any USB cable.</li>
