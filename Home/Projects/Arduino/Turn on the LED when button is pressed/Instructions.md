@@ -24,7 +24,7 @@
 <li>Add a red wire between another leg of the button and VCC (5V).</li>
 <li>Finally, connect a leg of the button (same side as the pull down resistor) to a digital pin (here 7)</li>
 <br>
-<strong>For the code click here:</strong>
+<strong>For the code click here:</strong><a href="https://portfoliioo.github.io/h/Home/Projects/Arduino/Turn%20on%20the%20LED%20when%20button%20is%20pressed/code.ino" target="_blank" download>Code</a>
 <br>
 <br>
 <strong>This is the link for the video tutorial: </strong><a href="https://youtu.be/ZoaUlquC6x8" target="_blank">Link</a>
