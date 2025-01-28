@@ -25,4 +25,4 @@
 <li>Finally, connect a leg of the button (same side as the pull down resistor) to a digital pin (here 7)</li>
 <br>
 <br>
-<iframe width="800" height="506" src="https://www.youtube.com/embed/ZoaUlquC6x8" title="Arduino - Turn LED On and Off With Push Button" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Arduino - Turn LED On and Off With Push Button](https://i.ytimg.com/vi_webp/ZoaUlquC6x8/maxresdefault.webp)](https://www.youtube.com/embed/ZoaUlquC6x8)
