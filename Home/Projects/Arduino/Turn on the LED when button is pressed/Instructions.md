@@ -23,3 +23,8 @@
 <li>Connect one leg of the button to the ground, and put a 10k Ohm resistor in between. This resistor will act as a “pull down” resistor, which means that the default button’s state will be LOW.</li>
 <li>Add a red wire between another leg of the button and VCC (5V).</li>
 <li>Finally, connect a leg of the button (same side as the pull down resistor) to a digital pin (here 7)</li>
+<br>
+<strong>For the code click here:</strong>
+<br>
+<br>
+<strong>This is the link for the video tutorial:</strong><a href="https://youtu.be/ZoaUlquC6x8" target="_blank">Link</a>
