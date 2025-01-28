@@ -6,6 +6,7 @@
 <li>220 Ohm resistor for the LED. If you don’t have this specific value, any resistor from 330 to 1k Ohm will do.</li>
 <li>10k Ohm resistor for the push button. If you don’t have, you can go until 20k-50k Ohm.</li>
 <li>A bunch of male to male wires (including if possible black, red, and other colors).</li>
+<br>
 Here’s the circuit you have to make.
 <br>
 <br>
