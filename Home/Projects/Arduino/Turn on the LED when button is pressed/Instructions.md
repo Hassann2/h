@@ -23,6 +23,3 @@
 <li>Connect one leg of the button to the ground, and put a 10k Ohm resistor in between. This resistor will act as a “pull down” resistor, which means that the default button’s state will be LOW.</li>
 <li>Add a red wire between another leg of the button and VCC (5V).</li>
 <li>Finally, connect a leg of the button (same side as the pull down resistor) to a digital pin (here 7)</li>
-<br>
-<br>
-[![Arduino - Turn LED On and Off With Push Button](https://i.ytimg.com/vi_webp/ZoaUlquC6x8/maxresdefault.webp)](https://www.youtube.com/embed/ZoaUlquC6x8)
