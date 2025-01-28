@@ -7,7 +7,7 @@
 <li>10k Ohm resistor for the push button. If you don’t have, you can go until 20k-50k Ohm.</li>
 <li>A bunch of male to male wires (including if possible black, red, and other colors).</li>
 <br>
-Here’s the circuit you have to make.
+<strong>Here’s the circuit you have to make:</strong>
 <br>
 <br>
 <img src="arduino_led_push_button-1024x505.png">
