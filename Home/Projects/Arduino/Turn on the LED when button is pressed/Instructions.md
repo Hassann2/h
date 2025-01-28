@@ -27,5 +27,3 @@
 <strong>For the code click here: </strong><a href="https://portfoliioo.github.io/h/Home/Projects/Arduino/Turn%20on%20the%20LED%20when%20button%20is%20pressed/code.ino" target="_blank" download>Code</a>
 <br>
 <strong>This is the link for the video tutorial: </strong><a href="https://youtu.be/ZoaUlquC6x8" target="_blank">Link</a>
-<br>
-<strong>Credit: <a href="https://roboticsbackend.com/arduino-turn-led-on-and-off-with-button/" target="_blank">The Robotics Back-End</a></strong>
