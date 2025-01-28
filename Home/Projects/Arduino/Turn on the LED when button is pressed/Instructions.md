@@ -12,7 +12,8 @@ Here’s the circuit you have to make.
 <br>
 <img src="arduino_led_push_button-1024x505.png">
 <br>
-<strong>Step by step instructions to build the circuit</strong>
+<strong>Step by step instructions to build the circuit:</strong>
+<br>
 <br>
 <li>First, make sure to power off your Arduino – remove any USB cable.</li>
 <li>Plug a black wire between the blue line of the breadboard and a ground (GND) pin on the Arduino board.</li>
