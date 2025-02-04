@@ -1,4 +1,4 @@
-Snake, one of the first games ever created for phones and PCs. The athenate of all our current modern games created with simple python code, enjoy!!
+Snake, one of the first games ever created for phones and PCs. The athenate of all our current modern games created with simple python code, enjoy!! 🐍
 
 <strong>Before running the program install the libraries, to do this run the following command in your terminal:</strong><br>
 <code>pip install -r requirements.txt</code>
