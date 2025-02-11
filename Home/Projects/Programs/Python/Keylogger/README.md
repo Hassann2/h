@@ -1,7 +1,6 @@
 This is a keylogger program, to record keyboard activities in separate files. 
 
-<strong>Before running the program install the libraries, to do this run the following command in your terminal:</strong><br>
-<code>pip install -r requirements.txt</code>
+<strong>to run the program start the <code>setup.bat</code> file</strong><br>
 
 <strong>PS: ⚠️ I am not responsible for any illegal use of the program ⚠️<strong>
 
