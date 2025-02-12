@@ -8,7 +8,7 @@ Good morning !! <br><br>I'm Hassan, a hobby programmer. This portfolio collects 
 <br>
 $${\color{fuchsia}Instagram}$$ 📷: <a href="#"><strong>Instagram</strong></a>
 
-To visit my site click on this link: <a href="https://portfoliioo.github.io/h/"><strong>Click Here !!</strong></a>
+🌐 To visit my site click on this link: <a href="https://portfoliioo.github.io/h/"><strong>Click Here !!</strong></a>
 
 Or scan this QR code
 
