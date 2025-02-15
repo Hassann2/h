@@ -1,5 +1,5 @@
-If there is any error or something to optimize I would be grateful to know.
+A simple graphing calculator designed with python.
 
 Here you can find the project link:
 
-💻 Link: <strong><a href="https://portfoliioo.github.io/h/Home/Projects/Programs/Python/Calculator/calculator.exe" target="_blank" download>Download Link</a></strong>
+💻 Link to download the program: <strong><a href="https://portfoliioo.github.io/h/Home/Projects/Programs/Python/Calculator/calculator.zip" target="_blank" download>Program</a></strong>
