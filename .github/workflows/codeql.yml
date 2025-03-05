@@ -33,10 +33,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: c-cpp
-          build-mode: autobuild
         - language: javascript-typescript
-          build-mode: none
+          build-mode: manual
         - language: html
           build-mode: none
         - language: css
