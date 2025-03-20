@@ -80,7 +80,7 @@ class App:
     def adguard_options(self):
         while True:
             os.system('cls||clear')
-            print("                     ADGUARD                     \n\n")
+            print("==================== ADGUARD ====================\n\n")
             print("1. Default servers --> DNS blocks ads and trackers\n")
             print("2. Non-filtering servers --> DNS will not block ads, trackers or other DNS requests, \n   Change your IP and Location\n")
             print("3. Family Protection Server --> DNS will block ads, trackers, adult content \n   and enable Safe Search and Safe Mode where possible\n")
