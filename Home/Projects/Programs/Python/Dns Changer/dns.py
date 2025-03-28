@@ -27,7 +27,7 @@ class DNSConfigurator:
                 'ipv6': ('2a10:50c0::1:ff', '2a10:50c0::2:ff')
             },
             3: {
-                'name': 'Family Protection Server',
+                'name': 'Family Protection',
                 'ipv4': ('94.140.14.15', '94.140.15.16'),
                 'ipv6': ('2a10:50c0::bad1:ff', '2a10:50c0::bad2:ff')
             }
@@ -48,51 +48,64 @@ class DNSConfigurator:
 
     def __init__(self):
         try:
-            self.check_admin_privileges()
-            self.active_interface = self.detect_active_interface()
+            if not self.is_admin():
+                self.run_as_admin()
+                sys.exit(0)  # Exit after requesting elevation
+            
+            self.active_interface = self.get_active_interface()
             if not self.active_interface:
-                print(f"{Fore.RED}No active network interface found!")
-                self.pause_exit()
+                self.exit_with_error("No active network interface found")
+            
             print(f"{Fore.GREEN}Active interface: {self.active_interface}")
+            time.sleep(1)
         except Exception as e:
-            print(f"{Fore.RED}Initialization error: {str(e)}")
-            self.pause_exit()
+            self.exit_with_error(f"Initialization error: {str(e)}")
 
-    def check_admin_privileges(self):
+    def is_admin(self):
         try:
-            admin = ctypes.windll.shell32.IsUserAnAdmin()
-            if not admin:
-                print(f"{Fore.YELLOW}Requesting admin privileges...")
-                ctypes.windll.shell32.ShellExecuteW(
-                    None, 
-                    "runas", 
-                    sys.executable, 
-                    f'"{os.path.abspath(__file__)}"', 
-                    None, 
-                    1
-                )
-                sys.exit(0)
-        except Exception as e:
-            print(f"{Fore.RED}Admin check error: {str(e)}")
-            self.pause_exit()
+            return ctypes.windll.shell32.IsUserAnAdmin()
+        except:
+            return False
 
-    def detect_active_interface(self):
+    def run_as_admin(self):
+        try:
+            # Get the absolute path to the script
+            script_path = os.path.abspath(sys.argv[0])
+            
+            # Use ShellExecuteW with proper parameters
+            ctypes.windll.shell32.ShellExecuteW(
+                None,           # hWnd
+                "runas",        # Operation
+                sys.executable, # Program
+                f'"{script_path}"', # Parameters
+                None,           # Directory
+                1               # Show command
+            )
+            return True
+        except Exception as e:
+            print(f"{Fore.RED}Elevation error: {str(e)}")
+            return False
+
+    def get_active_interface(self):
         try:
             stats = psutil.net_if_stats()
             io_counters = psutil.net_io_counters(pernic=True)
             
             for interface, status in stats.items():
-                if status.isup and io_counters.get(interface) and io_counters[interface].bytes_recv > 1000:
-                    return interface
+                if status.isup and io_counters.get(interface):
+                    if io_counters[interface].bytes_recv > 1024:
+                        return interface
             return None
-        except Exception as e:
-            print(f"{Fore.RED}Interface detection error: {str(e)}")
+        except:
             return None
 
     def execute_command(self, command):
         try:
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             result = subprocess.run(
                 command,
+                startupinfo=startupinfo,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 shell=True,
@@ -106,113 +119,107 @@ class DNSConfigurator:
 
     def set_dns_servers(self, ipv4_servers=None, ipv6_servers=None):
         try:
-            # Reset to DHCP
+            # Reset to DHCP first
             self.execute_command(f'netsh interface ipv4 set dnsservers name="{self.active_interface}" source=dhcp')
             self.execute_command(f'netsh interface ipv6 set dnsservers name="{self.active_interface}" source=dhcp')
-            
             time.sleep(1)
 
-            # Set IPv4
+            # Set IPv4 DNS
             if ipv4_servers:
                 self.execute_command(f'netsh interface ipv4 set dns name="{self.active_interface}" static {ipv4_servers[0]} primary')
                 if len(ipv4_servers) > 1:
                     self.execute_command(f'netsh interface ipv4 add dns name="{self.active_interface}" {ipv4_servers[1]} index=2')
 
-            # Set IPv6
+            # Set IPv6 DNS
             if ipv6_servers:
                 self.execute_command(f'netsh interface ipv6 set dns name="{self.active_interface}" static {ipv6_servers[0]} primary')
                 if len(ipv6_servers) > 1:
                     self.execute_command(f'netsh interface ipv6 add dns name="{self.active_interface}" {ipv6_servers[1]} index=2')
 
-            # Flush DNS
+            # Flush DNS cache
             self.execute_command("ipconfig /flushdns")
             return True
         except Exception as e:
-            print(f"{Fore.RED}DNS setting error: {str(e)}")
+            print(f"{Fore.RED}DNS configuration error: {str(e)}")
             return False
 
-    def display_menu(self):
+    def show_menu(self, title, options):
         os.system('cls')
-        print(f"{Fore.CYAN}=== DNS Configuration Tool ===")
-        print(f"{Fore.YELLOW}1. AdGuard DNS")
-        print(f"{Fore.YELLOW}2. Cloudflare DNS")
-        print(f"{Fore.YELLOW}3. Reset to Default DNS")
-        print(f"{Fore.YELLOW}4. Exit")
-        print(f"{Fore.CYAN}==============================")
+        print(f"{Fore.CYAN}{'=' * 50}")
+        print(f"{Fore.YELLOW}{title:^50}")
+        print(f"{Fore.CYAN}{'=' * 50}\n")
+        for key, option in options.items():
+            print(f"{Fore.YELLOW}[{key}] {option['name'] if isinstance(option, dict) else option}")
 
-    def handle_choice(self, choice):
-        if choice == '1':
-            self.handle_provider(DNSProvider.ADGUARD)
-        elif choice == '2':
-            self.handle_provider(DNSProvider.CLOUDFLARE)
-        elif choice == '3':
-            if self.set_dns_servers():
-                print(f"{Fore.GREEN}DNS reset successfully!")
-            else:
-                print(f"{Fore.RED}DNS reset failed!")
-            self.pause()
-        elif choice == '4':
-            sys.exit()
-        else:
-            print(f"{Fore.RED}Invalid choice!")
+    def main_menu(self):
+        while True:
+            try:
+                self.show_menu("DNS Configuration Tool", {
+                    '1': {'name': 'AdGuard DNS'},
+                    '2': {'name': 'Cloudflare DNS'},
+                    '3': {'name': 'Reset to Default DNS'},
+                    '4': {'name': 'Exit'}
+                })
+                
+                choice = input("\nSelect option: ").strip()
+                
+                if choice == '1':
+                    self.provider_menu(DNSProvider.ADGUARD)
+                elif choice == '2':
+                    self.provider_menu(DNSProvider.CLOUDFLARE)
+                elif choice == '3':
+                    if self.set_dns_servers():
+                        print(f"{Fore.GREEN}DNS reset successfully!")
+                    input("\nPress Enter to continue...")
+                elif choice == '4':
+                    sys.exit(0)
+                else:
+                    print(f"{Fore.RED}Invalid choice!")
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                sys.exit(0)
+            except Exception as e:
+                print(f"{Fore.RED}Error: {str(e)}")
+                time.sleep(1)
 
-    def handle_provider(self, provider):
-        try:
-            while True:
-                os.system('cls')
-                print(f"{Fore.CYAN}=== {provider.name} Options ===")
+    def provider_menu(self, provider):
+        while True:
+            try:
                 options = self.DNS_OPTIONS[provider]
+                menu_options = {str(k): v for k, v in options.items()}
+                menu_options[str(len(options)+1)] = {'name': 'Back'}
+                menu_options[str(len(options)+2)] = {'name': 'Exit'}
                 
-                for key in sorted(options.keys()):
-                    print(f"{Fore.YELLOW}{key}. {options[key]['name']}")
+                self.show_menu(f"{provider.name} DNS Options", menu_options)
                 
-                print(f"\n{Fore.YELLOW}{len(options)+1}. Back")
-                print(f"{Fore.YELLOW}{len(options)+2}. Exit")
-                
-                choice = input(f"\n{Fore.GREEN}Select option: ")
+                choice = input("\nSelect DNS option: ").strip()
                 
                 if choice == str(len(options)+1):
                     return
                 elif choice == str(len(options)+2):
-                    sys.exit()
-                elif choice in map(str, options.keys()):
+                    sys.exit(0)
+                elif choice in menu_options:
                     config = options[int(choice)]
                     if self.set_dns_servers(config['ipv4'], config['ipv6']):
                         print(f"{Fore.GREEN}DNS configured successfully!")
-                    else:
-                        print(f"{Fore.RED}DNS configuration failed!")
-                    self.pause()
+                    input("\nPress Enter to continue...")
                 else:
-                    print(f"{Fore.RED}Invalid option!")
+                    print(f"{Fore.RED}Invalid choice!")
                     time.sleep(1)
-        except Exception as e:
-            print(f"{Fore.RED}Menu error: {str(e)}")
-            self.pause()
-
-    def pause(self):
-        input(f"\n{Fore.CYAN}Press Enter to continue...")
-
-    def pause_exit(self):
-        input(f"\n{Fore.RED}Press Enter to exit...")
-        sys.exit(1)
-
-    def main_loop(self):
-        while True:
-            try:
-                self.display_menu()
-                choice = input(f"\n{Fore.GREEN}Enter your choice: ").strip()
-                self.handle_choice(choice)
             except KeyboardInterrupt:
-                print(f"\n{Fore.RED}Operation cancelled!")
-                sys.exit()
+                return
             except Exception as e:
-                print(f"{Fore.RED}Unexpected error: {str(e)}")
-                self.pause_exit()
+                print(f"{Fore.RED}Error: {str(e)}")
+                time.sleep(1)
+
+    def exit_with_error(self, message):
+        print(f"{Fore.RED}{message}")
+        input("Press Enter to exit...")
+        sys.exit(1)
 
 if __name__ == "__main__":
     try:
-        configurator = DNSConfigurator()
-        configurator.main_loop()
+        DNSConfigurator().main_menu()
     except Exception as e:
         print(f"{Fore.RED}Fatal error: {str(e)}")
         input("Press Enter to exit...")
