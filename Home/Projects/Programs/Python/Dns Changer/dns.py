@@ -1,159 +1,219 @@
 import os
-import psutil
-import ctypes
 import sys
 import time
-import random
-import string
+import ctypes
+import psutil
+import subprocess
+from enum import Enum
+from colorama import Fore, Style, init
 
-class App:
+init(autoreset=True)
+
+class DNSProvider(Enum):
+    ADGUARD = 1
+    CLOUDFLARE = 2
+
+class DNSConfigurator:
+    DNS_OPTIONS = {
+        DNSProvider.ADGUARD: {
+            1: {
+                'name': 'Default servers (Block ads/trackers)',
+                'ipv4': ('94.140.14.14', '94.140.15.15'),
+                'ipv6': ('2a10:50c0::ad1:ff', '2a10:50c0::ad2:ff')
+            },
+            2: {
+                'name': 'Non-filtering servers',
+                'ipv4': ('94.140.14.140', '94.140.14.141'),
+                'ipv6': ('2a10:50c0::1:ff', '2a10:50c0::2:ff')
+            },
+            3: {
+                'name': 'Family Protection Server',
+                'ipv4': ('94.140.14.15', '94.140.15.16'),
+                'ipv6': ('2a10:50c0::bad1:ff', '2a10:50c0::bad2:ff')
+            }
+        },
+        DNSProvider.CLOUDFLARE: {
+            1: {
+                'name': 'Block malware',
+                'ipv4': ('1.1.1.2', '1.0.0.2'),
+                'ipv6': ('2606:4700:4700::1112', '2606:4700:4700::1002')
+            },
+            2: {
+                'name': 'Block malware and adult content',
+                'ipv4': ('1.1.1.3', '1.0.0.3'),
+                'ipv6': ('2606:4700:4700::1113', '2606:4700:4700::1003')
+            }
+        }
+    }
+
     def __init__(self):
-        self.animate_intro()
-        if self.is_admin():
-            self.show_options()
-        else:
-            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-
-    @staticmethod
-    def is_admin():
         try:
-            return ctypes.windll.shell32.IsUserAnAdmin()
-        except:
+            self.check_admin_privileges()
+            self.active_interface = self.detect_active_interface()
+            if not self.active_interface:
+                print(f"{Fore.RED}No active network interface found!")
+                self.pause_exit()
+            print(f"{Fore.GREEN}Active interface: {self.active_interface}")
+        except Exception as e:
+            print(f"{Fore.RED}Initialization error: {str(e)}")
+            self.pause_exit()
+
+    def check_admin_privileges(self):
+        try:
+            admin = ctypes.windll.shell32.IsUserAnAdmin()
+            if not admin:
+                print(f"{Fore.YELLOW}Requesting admin privileges...")
+                ctypes.windll.shell32.ShellExecuteW(
+                    None, 
+                    "runas", 
+                    sys.executable, 
+                    f'"{os.path.abspath(__file__)}"', 
+                    None, 
+                    1
+                )
+                sys.exit(0)
+        except Exception as e:
+            print(f"{Fore.RED}Admin check error: {str(e)}")
+            self.pause_exit()
+
+    def detect_active_interface(self):
+        try:
+            stats = psutil.net_if_stats()
+            io_counters = psutil.net_io_counters(pernic=True)
+            
+            for interface, status in stats.items():
+                if status.isup and io_counters.get(interface) and io_counters[interface].bytes_recv > 1000:
+                    return interface
+            return None
+        except Exception as e:
+            print(f"{Fore.RED}Interface detection error: {str(e)}")
+            return None
+
+    def execute_command(self, command):
+        try:
+            result = subprocess.run(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+                text=True,
+                check=True
+            )
+            return result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            print(f"{Fore.RED}Command failed: {e.stderr}")
+            return None
+
+    def set_dns_servers(self, ipv4_servers=None, ipv6_servers=None):
+        try:
+            # Reset to DHCP
+            self.execute_command(f'netsh interface ipv4 set dnsservers name="{self.active_interface}" source=dhcp')
+            self.execute_command(f'netsh interface ipv6 set dnsservers name="{self.active_interface}" source=dhcp')
+            
+            time.sleep(1)
+
+            # Set IPv4
+            if ipv4_servers:
+                self.execute_command(f'netsh interface ipv4 set dns name="{self.active_interface}" static {ipv4_servers[0]} primary')
+                if len(ipv4_servers) > 1:
+                    self.execute_command(f'netsh interface ipv4 add dns name="{self.active_interface}" {ipv4_servers[1]} index=2')
+
+            # Set IPv6
+            if ipv6_servers:
+                self.execute_command(f'netsh interface ipv6 set dns name="{self.active_interface}" static {ipv6_servers[0]} primary')
+                if len(ipv6_servers) > 1:
+                    self.execute_command(f'netsh interface ipv6 add dns name="{self.active_interface}" {ipv6_servers[1]} index=2')
+
+            # Flush DNS
+            self.execute_command("ipconfig /flushdns")
+            return True
+        except Exception as e:
+            print(f"{Fore.RED}DNS setting error: {str(e)}")
             return False
 
-    @staticmethod
-    def get_active_interface():
-        interfaces = psutil.net_if_addrs()
-        stats = psutil.net_if_stats()
-        active_interfaces = [iface for iface, addrs in interfaces.items() if stats[iface].isup]
-        return active_interfaces
+    def display_menu(self):
+        os.system('cls')
+        print(f"{Fore.CYAN}=== DNS Configuration Tool ===")
+        print(f"{Fore.YELLOW}1. AdGuard DNS")
+        print(f"{Fore.YELLOW}2. Cloudflare DNS")
+        print(f"{Fore.YELLOW}3. Reset to Default DNS")
+        print(f"{Fore.YELLOW}4. Exit")
+        print(f"{Fore.CYAN}==============================")
 
-    @staticmethod
-    def get_interface_with_traffic(interfaces):
-        for interface in interfaces:
-            counters = psutil.net_io_counters(pernic=True)
-            if counters[interface].bytes_recv > 0:
-                return interface
-        return None
-
-    @staticmethod
-    def change_dns(dns1, dns2=None, ipv6_dns1=None, ipv6_dns2=None):
-        interfaces = App.get_active_interface()
-        interface = App.get_interface_with_traffic(interfaces)
-        if not interface:
-            print("No active interface with traffic found.")
-            return
-
-        print(f"Active interface with traffic: {interface}")
-
-        command = f'netsh interface ip set dns name="{interface}" static {dns1}'
-        os.system(command)
-        if dns2:
-            command = f'netsh interface ip add dns name="{interface}" {dns2} index=2'
-            os.system(command)
-
-        if ipv6_dns1:
-            command = f'netsh interface ipv6 set dnsservers name="{interface}" static {ipv6_dns1}'
-            os.system(command)
-        if ipv6_dns2:
-            command = f'netsh interface ipv6 add dnsservers name="{interface}" {ipv6_dns2} index=2'
-            os.system(command)
-
-    def show_options(self):
-        while True:
-            print("Protect your network by choosing one of these servers:\n")
-            print("1. Adguard")
-            print("2. Cloudflare")
-            print("3. exit\n")
-            choice = input("Enter the number of your choice: ")
-
-            if choice == '1':
-                self.adguard_options()
-            elif choice == '2':
-                self.cloudflare_options()
-            elif choice == '3':
-                sys.exit(0)
+    def handle_choice(self, choice):
+        if choice == '1':
+            self.handle_provider(DNSProvider.ADGUARD)
+        elif choice == '2':
+            self.handle_provider(DNSProvider.CLOUDFLARE)
+        elif choice == '3':
+            if self.set_dns_servers():
+                print(f"{Fore.GREEN}DNS reset successfully!")
             else:
-                print("Invalid choice. Exiting.")
-                return
+                print(f"{Fore.RED}DNS reset failed!")
+            self.pause()
+        elif choice == '4':
+            sys.exit()
+        else:
+            print(f"{Fore.RED}Invalid choice!")
 
-    def adguard_options(self):
+    def handle_provider(self, provider):
+        try:
+            while True:
+                os.system('cls')
+                print(f"{Fore.CYAN}=== {provider.name} Options ===")
+                options = self.DNS_OPTIONS[provider]
+                
+                for key in sorted(options.keys()):
+                    print(f"{Fore.YELLOW}{key}. {options[key]['name']}")
+                
+                print(f"\n{Fore.YELLOW}{len(options)+1}. Back")
+                print(f"{Fore.YELLOW}{len(options)+2}. Exit")
+                
+                choice = input(f"\n{Fore.GREEN}Select option: ")
+                
+                if choice == str(len(options)+1):
+                    return
+                elif choice == str(len(options)+2):
+                    sys.exit()
+                elif choice in map(str, options.keys()):
+                    config = options[int(choice)]
+                    if self.set_dns_servers(config['ipv4'], config['ipv6']):
+                        print(f"{Fore.GREEN}DNS configured successfully!")
+                    else:
+                        print(f"{Fore.RED}DNS configuration failed!")
+                    self.pause()
+                else:
+                    print(f"{Fore.RED}Invalid option!")
+                    time.sleep(1)
+        except Exception as e:
+            print(f"{Fore.RED}Menu error: {str(e)}")
+            self.pause()
+
+    def pause(self):
+        input(f"\n{Fore.CYAN}Press Enter to continue...")
+
+    def pause_exit(self):
+        input(f"\n{Fore.RED}Press Enter to exit...")
+        sys.exit(1)
+
+    def main_loop(self):
         while True:
-            os.system('cls||clear')
-            print("==================== ADGUARD ====================\n\n")
-            print("1. Default servers --> DNS blocks ads and trackers\n")
-            print("2. Non-filtering servers --> DNS will not block ads, trackers or other DNS requests, \n   Change your IP and Location\n")
-            print("3. Family Protection Server --> DNS will block ads, trackers, adult content \n   and enable Safe Search and Safe Mode where possible\n")
-            print("4. back\n")
-            print("5. exit")
-            choice = input("Enter the number of your choice: ")
-            if choice == '1':
-                primary_dns = "94.140.14.14"
-                secondary_dns = "94.140.15.15"
-                primary_ipv6_dns = "2a10:50c0::ad1:ff"
-                secondary_ipv6_dns = "2a10:50c0::ad2:ff"
-                break
-            elif choice == '2':
-                primary_dns = "94.140.14.140"
-                secondary_dns = "94.140.14.141"
-                primary_ipv6_dns = "2a10:50c0::1:ff"
-                secondary_ipv6_dns = "2a10:50c0::2:ff"
-                break
-            elif choice == '3':
-                primary_dns = "94.140.14.15"
-                secondary_dns = "94.140.15.16"
-                primary_ipv6_dns = "2a10:50c0::bad1:ff"
-                secondary_ipv6_dns = "2a10:50c0::bad2:ff"
-                break
-            elif choice == '4':
-                os.system('cls||clear')
-                return
-            elif choice == '5':
-                sys.exit(0)
-            else:
-                print("Invalid choice. Please try again.")
-
-        self.change_dns(primary_dns, secondary_dns, primary_ipv6_dns, secondary_ipv6_dns)
-
-    def cloudflare_options(self):
-        while True:
-            os.system('cls||clear')
-            print("                     CLOUDFLARE                     \n\n")
-            print("1. Block malware --> DNS resolvers to block malicious content\n")
-            print("2. Block malware and adult content --> DNS resolvers to block malware and adult content\n")
-            print("3. back\n")
-            print("4. exit")
-            choice = input("Enter the number of your choice: ")
-            if choice == '1':
-                primary_dns = "1.1.1.2"
-                secondary_dns = "1.0.0.2"
-                primary_ipv6_dns = "2606:4700:4700::1112"
-                secondary_ipv6_dns = "2606:4700:4700::1002"
-                break
-            elif choice == '2':
-                primary_dns = "1.1.1.3"
-                secondary_dns = "1.0.0.3"
-                primary_ipv6_dns = "2606:4700:4700::1113"
-                secondary_ipv6_dns = "2606:4700:4700::1003"
-                break
-            elif choice == '3':
-                os.system('cls||clear')
-                return
-            elif choice == '4':
-                sys.exit(0)
-            else:
-                print("Invalid choice. Please try again.")
-
-        self.change_dns(primary_dns, secondary_dns, primary_ipv6_dns, secondary_ipv6_dns)
-
-    def animate_intro(self):
-        print("Initializing DNS Changer...")
-        time.sleep(1)
-        for i in range(10):
-            random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-            print(f"\rLoading... {random_string}", end="")
-            time.sleep(0.2)
-        print("\nWelcome to the DNS Changer!")
+            try:
+                self.display_menu()
+                choice = input(f"\n{Fore.GREEN}Enter your choice: ").strip()
+                self.handle_choice(choice)
+            except KeyboardInterrupt:
+                print(f"\n{Fore.RED}Operation cancelled!")
+                sys.exit()
+            except Exception as e:
+                print(f"{Fore.RED}Unexpected error: {str(e)}")
+                self.pause_exit()
 
 if __name__ == "__main__":
-    App()
+    try:
+        configurator = DNSConfigurator()
+        configurator.main_loop()
+    except Exception as e:
+        print(f"{Fore.RED}Fatal error: {str(e)}")
+        input("Press Enter to exit...")
+        sys.exit(1)
