@@ -50,7 +50,7 @@ class DNSConfigurator:
         try:
             if not self.is_admin():
                 self.run_as_admin()
-                sys.exit(0)  # Exit after requesting elevation
+                sys.exit(0)
             
             self.active_interface = self.get_active_interface()
             if not self.active_interface:
@@ -69,17 +69,14 @@ class DNSConfigurator:
 
     def run_as_admin(self):
         try:
-            # Get the absolute path to the script
             script_path = os.path.abspath(sys.argv[0])
-            
-            # Use ShellExecuteW with proper parameters
             ctypes.windll.shell32.ShellExecuteW(
-                None,           # hWnd
-                "runas",        # Operation
-                sys.executable, # Program
-                f'"{script_path}"', # Parameters
-                None,           # Directory
-                1               # Show command
+                None,
+                "runas",
+                sys.executable,
+                f'"{script_path}"',
+                None,
+                1
             )
             return True
         except Exception as e:
@@ -91,12 +88,29 @@ class DNSConfigurator:
             stats = psutil.net_if_stats()
             io_counters = psutil.net_io_counters(pernic=True)
             
+            vpn_keywords = [
+                'vpn', 'tunnel', 'mcafee', 'wireguard',
+                'openvpn', 'softether', 'zerotier', 'tailscale',
+                'pptp', 'l2tp', 'ipsec', 'gre', 'tap-'
+            ]
+
+            physical_interfaces = []
             for interface, status in stats.items():
+                if any(kw in interface.lower() for kw in vpn_keywords):
+                    continue
+                
                 if status.isup and io_counters.get(interface):
-                    if io_counters[interface].bytes_recv > 1024:
-                        return interface
-            return None
-        except:
+                    traffic = io_counters[interface].bytes_recv + io_counters[interface].bytes_sent
+                    if traffic > 1024:  # Minimum traffic threshold
+                        physical_interfaces.append((interface, traffic))
+
+            if not physical_interfaces:
+                return None
+
+            physical_interfaces.sort(key=lambda x: x[1], reverse=True)
+            return physical_interfaces[0][0]
+        except Exception as e:
+            print(f"{Fore.YELLOW}Interface detection warning: {str(e)}")
             return None
 
     def execute_command(self, command):
@@ -117,8 +131,30 @@ class DNSConfigurator:
             print(f"{Fore.RED}Command failed: {e.stderr}")
             return None
 
+    def restart_interface(self):
+        try:
+            print(f"{Fore.YELLOW}Restarting network interface {self.active_interface}...")
+            self.execute_command(f'netsh interface set interface "{self.active_interface}" admin=disable')
+            time.sleep(3)  # Increased wait time for interface to disable
+            self.execute_command(f'netsh interface set interface "{self.active_interface}" admin=enable')
+            time.sleep(5)  # Increased wait time for interface to come back up
+            
+            # Verify interface is back up
+            stats = psutil.net_if_stats()
+            if self.active_interface in stats and stats[self.active_interface].isup:
+                print(f"{Fore.GREEN}Interface restarted successfully")
+                return True
+            else:
+                print(f"{Fore.RED}Interface failed to restart properly")
+                return False
+        except Exception as e:
+            print(f"{Fore.RED}Error restarting interface: {str(e)}")
+            return False
+
     def set_dns_servers(self, ipv4_servers=None, ipv6_servers=None):
         try:
+            print(f"{Fore.CYAN}Configuring DNS servers...")
+            
             # Reset to DHCP first
             self.execute_command(f'netsh interface ipv4 set dnsservers name="{self.active_interface}" source=dhcp')
             self.execute_command(f'netsh interface ipv6 set dnsservers name="{self.active_interface}" source=dhcp')
@@ -126,18 +162,26 @@ class DNSConfigurator:
 
             # Set IPv4 DNS
             if ipv4_servers:
+                print(f"{Fore.CYAN}Setting IPv4 DNS: {ipv4_servers}")
                 self.execute_command(f'netsh interface ipv4 set dns name="{self.active_interface}" static {ipv4_servers[0]} primary')
                 if len(ipv4_servers) > 1:
                     self.execute_command(f'netsh interface ipv4 add dns name="{self.active_interface}" {ipv4_servers[1]} index=2')
 
             # Set IPv6 DNS
             if ipv6_servers:
+                print(f"{Fore.CYAN}Setting IPv6 DNS: {ipv6_servers}")
                 self.execute_command(f'netsh interface ipv6 set dns name="{self.active_interface}" static {ipv6_servers[0]} primary')
                 if len(ipv6_servers) > 1:
                     self.execute_command(f'netsh interface ipv6 add dns name="{self.active_interface}" {ipv6_servers[1]} index=2')
 
             # Flush DNS cache
             self.execute_command("ipconfig /flushdns")
+            
+            # Restart interface
+            if not self.restart_interface():
+                print(f"{Fore.YELLOW}DNS settings applied but interface restart failed")
+                return False
+                
             return True
         except Exception as e:
             print(f"{Fore.RED}DNS configuration error: {str(e)}")
