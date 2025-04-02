@@ -4,16 +4,16 @@ import time
 import ctypes
 import psutil
 import subprocess
+import threading
 from enum import Enum
-from colorama import Fore, Style, init
-
-init(autoreset=True)
+from tkinter import *
+from tkinter import ttk, messagebox
 
 class DNSProvider(Enum):
     ADGUARD = 1
     CLOUDFLARE = 2
 
-class DNSConfigurator:
+class DNSConfiguratorGUI:
     DNS_OPTIONS = {
         DNSProvider.ADGUARD: {
             1: {
@@ -47,19 +47,18 @@ class DNSConfigurator:
     }
 
     def __init__(self):
-        try:
-            if not self.is_admin():
-                self.run_as_admin()
-                sys.exit(0)
-            
-            self.active_interface = self.get_active_interface()
-            if not self.active_interface:
-                self.exit_with_error("No active network interface found")
-            
-            print(f"{Fore.GREEN}Active interface: {self.active_interface}")
-            time.sleep(1)
-        except Exception as e:
-            self.exit_with_error(f"Initialization error: {str(e)}")
+        self.root = None
+        self.active_interface = None
+        self.selected_option = {}
+        self.loading_window = None
+        self.check_admin_and_initialize()
+
+    def check_admin_and_initialize(self):
+        if not self.is_admin():
+            self.run_as_admin()
+            sys.exit(0)
+        else:
+            self.initialize_gui()
 
     def is_admin(self):
         try:
@@ -80,7 +79,7 @@ class DNSConfigurator:
             )
             return True
         except Exception as e:
-            print(f"{Fore.RED}Elevation error: {str(e)}")
+            messagebox.showerror("Error", f"Elevation error: {str(e)}")
             return False
 
     def get_active_interface(self):
@@ -101,7 +100,7 @@ class DNSConfigurator:
                 
                 if status.isup and io_counters.get(interface):
                     traffic = io_counters[interface].bytes_recv + io_counters[interface].bytes_sent
-                    if traffic > 1024:  # Minimum traffic threshold
+                    if traffic > 1024:
                         physical_interfaces.append((interface, traffic))
 
             if not physical_interfaces:
@@ -110,7 +109,7 @@ class DNSConfigurator:
             physical_interfaces.sort(key=lambda x: x[1], reverse=True)
             return physical_interfaces[0][0]
         except Exception as e:
-            print(f"{Fore.YELLOW}Interface detection warning: {str(e)}")
+            messagebox.showwarning("Warning", f"Interface detection warning: {str(e)}")
             return None
 
     def execute_command(self, command):
@@ -128,143 +127,260 @@ class DNSConfigurator:
             )
             return result.stdout.strip()
         except subprocess.CalledProcessError as e:
-            print(f"{Fore.RED}Command failed: {e.stderr}")
+            messagebox.showerror("Error", f"Command failed: {e.stderr}")
             return None
 
     def restart_interface(self):
         try:
-            print(f"{Fore.YELLOW}Restarting network interface {self.active_interface}...")
             self.execute_command(f'netsh interface set interface "{self.active_interface}" admin=disable')
-            time.sleep(3)  # Increased wait time for interface to disable
+            time.sleep(3)
             self.execute_command(f'netsh interface set interface "{self.active_interface}" admin=enable')
-            time.sleep(5)  # Increased wait time for interface to come back up
+            time.sleep(5)
             
-            # Verify interface is back up
             stats = psutil.net_if_stats()
             if self.active_interface in stats and stats[self.active_interface].isup:
-                print(f"{Fore.GREEN}Interface restarted successfully")
                 return True
             else:
-                print(f"{Fore.RED}Interface failed to restart properly")
                 return False
         except Exception as e:
-            print(f"{Fore.RED}Error restarting interface: {str(e)}")
+            messagebox.showerror("Error", f"Error restarting interface: {str(e)}")
             return False
 
     def set_dns_servers(self, ipv4_servers=None, ipv6_servers=None):
         try:
-            print(f"{Fore.CYAN}Configuring DNS servers...")
-            
-            # Reset to DHCP first
             self.execute_command(f'netsh interface ipv4 set dnsservers name="{self.active_interface}" source=dhcp')
             self.execute_command(f'netsh interface ipv6 set dnsservers name="{self.active_interface}" source=dhcp')
             time.sleep(1)
 
-            # Set IPv4 DNS
             if ipv4_servers:
-                print(f"{Fore.CYAN}Setting IPv4 DNS: {ipv4_servers}")
                 self.execute_command(f'netsh interface ipv4 set dns name="{self.active_interface}" static {ipv4_servers[0]} primary')
                 if len(ipv4_servers) > 1:
                     self.execute_command(f'netsh interface ipv4 add dns name="{self.active_interface}" {ipv4_servers[1]} index=2')
 
-            # Set IPv6 DNS
             if ipv6_servers:
-                print(f"{Fore.CYAN}Setting IPv6 DNS: {ipv6_servers}")
                 self.execute_command(f'netsh interface ipv6 set dns name="{self.active_interface}" static {ipv6_servers[0]} primary')
                 if len(ipv6_servers) > 1:
                     self.execute_command(f'netsh interface ipv6 add dns name="{self.active_interface}" {ipv6_servers[1]} index=2')
 
-            # Flush DNS cache
             self.execute_command("ipconfig /flushdns")
             
-            # Restart interface
             if not self.restart_interface():
-                print(f"{Fore.YELLOW}DNS settings applied but interface restart failed")
+                messagebox.showwarning("Warning", "DNS settings applied but interface restart failed")
                 return False
                 
             return True
         except Exception as e:
-            print(f"{Fore.RED}DNS configuration error: {str(e)}")
+            messagebox.showerror("Error", f"DNS configuration error: {str(e)}")
             return False
 
-    def show_menu(self, title, options):
-        os.system('cls')
-        print(f"{Fore.CYAN}{'=' * 50}")
-        print(f"{Fore.YELLOW}{title:^50}")
-        print(f"{Fore.CYAN}{'=' * 50}\n")
-        for key, option in options.items():
-            print(f"{Fore.YELLOW}[{key}] {option['name'] if isinstance(option, dict) else option}")
+    def initialize_gui(self):
+        self.root = Tk()
+        self.root.title("DNS Configuration Tool")
+        self.root.geometry("650x550")
+        self.root.resizable(False, False)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
-    def main_menu(self):
-        while True:
+        # Imposta l'icona personalizzata
+        try:
+            icon_path = self.get_icon_path()
+            if icon_path and os.path.exists(icon_path):
+                self.root.iconbitmap(icon_path)
+            else:
+                print("Icon file not found, using default icon")
+        except Exception as e:
+            print(f"Error loading icon: {e}")
+
+        # Configurazione stili
+        self.style = ttk.Style()
+        self.style.configure('TButton', font=('Helvetica', 12), padding=12)
+        self.style.configure('Title.TLabel', font=('Helvetica', 16, 'bold'))
+        self.style.configure('Subtitle.TLabel', font=('Helvetica', 12))
+        self.style.configure('Option.TRadiobutton', font=('Helvetica', 12), padding=6)
+        self.style.configure('Large.TButton', font=('Helvetica', 12), padding=10)
+
+        self.active_interface = self.get_active_interface()
+        if not self.active_interface:
+            messagebox.showerror("Error", "No active network interface found")
+            sys.exit(1)
+
+        self.create_main_frame()
+        self.root.mainloop()
+
+    def get_icon_path(self):
+        """Restituisce il percorso dell'icona personalizzata"""
+        # Cerca l'icona nella stessa directory dello script
+        script_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        icon_name = "dns_icon.ico"  # Sostituisci con il nome del tuo file .ico
+        icon_path = os.path.join(script_dir, icon_name)
+        
+        # Se non trovata, cerca nella directory corrente
+        if not os.path.exists(icon_path):
+            icon_path = os.path.join(os.getcwd(), icon_name)
+        
+        return icon_path if os.path.exists(icon_path) else None
+
+    def create_main_frame(self):
+        main_frame = ttk.Frame(self.root, padding=35)
+        main_frame.pack(fill=BOTH, expand=True)
+
+        ttk.Label(main_frame, text="DNS Configuration Tool", style='Title.TLabel').pack(pady=20)
+        ttk.Label(main_frame, text=f"Active Interface: {self.active_interface}", style='Subtitle.TLabel').pack(pady=10)
+
+        buttons = [
+            ("AdGuard DNS", lambda: self.show_provider_options(DNSProvider.ADGUARD)),
+            ("Cloudflare DNS", lambda: self.show_provider_options(DNSProvider.CLOUDFLARE)),
+            ("Reset to Default DNS", self.reset_dns),
+            ("Exit", self.on_close)
+        ]
+
+        for text, command in buttons:
+            btn = ttk.Button(main_frame, text=text, command=command, width=25, style='Large.TButton')
+            btn.pack(pady=12)
+            # Aggiungi effetto hover con cursore a mano
+            btn.bind("<Enter>", lambda e, b=btn: b.configure(cursor="hand2"))
+            btn.bind("<Leave>", lambda e, b=btn: b.configure(cursor=""))
+
+    def show_provider_options(self, provider):
+        options_window = Toplevel(self.root)
+        options_window.title(f"{provider.name} Options")
+        options_window.geometry("500x400")
+        options_window.resizable(False, False)
+        options_window.grab_set()
+
+        # Imposta la stessa icona per la finestra secondaria
+        try:
+            icon_path = self.get_icon_path()
+            if icon_path and os.path.exists(icon_path):
+                options_window.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Error loading icon for child window: {e}")
+
+        main_frame = ttk.Frame(options_window, padding=30)
+        main_frame.pack(fill=BOTH, expand=True)
+
+        ttk.Label(main_frame, 
+                 text=f"Select {provider.name} DNS Option:", 
+                 font=('Helvetica', 14, 'bold')).pack(pady=15)
+
+        options = self.DNS_OPTIONS[provider]
+        self.selected_option[provider] = IntVar(value=1)
+
+        for idx, config in options.items():
+            frame = ttk.Frame(main_frame)
+            frame.pack(fill=X, pady=8)
+            
+            rb = ttk.Radiobutton(
+                frame,
+                text=config['name'],
+                variable=self.selected_option[provider],
+                value=idx,
+                style='Option.TRadiobutton'
+            )
+            rb.pack(side=LEFT, anchor=W)
+
+        btn_frame = ttk.Frame(main_frame)
+        btn_frame.pack(pady=20)
+        
+        configure_btn = ttk.Button(btn_frame, 
+                 text="Configure", 
+                 command=lambda: self.apply_configuration(provider, options_window),
+                 style='Large.TButton')
+        configure_btn.pack(side=LEFT, padx=15)
+        configure_btn.bind("<Enter>", lambda e: configure_btn.configure(cursor="hand2"))
+        configure_btn.bind("<Leave>", lambda e: configure_btn.configure(cursor=""))
+        
+        back_btn = ttk.Button(btn_frame, 
+                 text="Back", 
+                 command=options_window.destroy,
+                 style='Large.TButton')
+        back_btn.pack(side=LEFT, padx=15)
+        back_btn.bind("<Enter>", lambda e: back_btn.configure(cursor="hand2"))
+        back_btn.bind("<Leave>", lambda e: back_btn.configure(cursor=""))
+
+    def show_loading(self, title="Processing"):
+        self.loading_window = Toplevel(self.root)
+        self.loading_window.title(title)
+        self.loading_window.geometry("350x150")
+        self.loading_window.resizable(False, False)
+        
+        # Centra la finestra di caricamento
+        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - 175
+        y = self.root.winfo_y() + (self.root.winfo_height() // 2) - 75
+        self.loading_window.geometry(f"+{x}+{y}")
+        
+        # Imposta l'icona per la finestra di caricamento
+        try:
+            icon_path = self.get_icon_path()
+            if icon_path and os.path.exists(icon_path):
+                self.loading_window.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Error loading icon for loading window: {e}")
+        
+        self.loading_window.transient(self.root)
+        self.loading_window.grab_set()
+        
+        main_frame = ttk.Frame(self.loading_window, padding=20)
+        main_frame.pack(fill=BOTH, expand=True)
+        
+        ttk.Label(main_frame, text="Please wait...", font=('Helvetica', 12)).pack(pady=10)
+        progress = ttk.Progressbar(main_frame, mode='indeterminate')
+        progress.pack(pady=10)
+        progress.start()
+
+    def hide_loading(self):
+        if self.loading_window:
+            self.loading_window.destroy()
+            self.loading_window = None
+
+    def apply_configuration(self, provider, window):
+        selected = self.selected_option[provider].get()
+        config = self.DNS_OPTIONS[provider][selected]
+        
+        def thread_target():
+            self.show_loading("Applying Configuration")
             try:
-                self.show_menu("DNS Configuration Tool", {
-                    '1': {'name': 'AdGuard DNS'},
-                    '2': {'name': 'Cloudflare DNS'},
-                    '3': {'name': 'Reset to Default DNS'},
-                    '4': {'name': 'Exit'}
-                })
-                
-                choice = input("\nSelect option: ").strip()
-                
-                if choice == '1':
-                    self.provider_menu(DNSProvider.ADGUARD)
-                elif choice == '2':
-                    self.provider_menu(DNSProvider.CLOUDFLARE)
-                elif choice == '3':
-                    if self.set_dns_servers():
-                        print(f"{Fore.GREEN}DNS reset successfully!")
-                    input("\nPress Enter to continue...")
-                elif choice == '4':
-                    sys.exit(0)
-                else:
-                    print(f"{Fore.RED}Invalid choice!")
-                    time.sleep(1)
-            except KeyboardInterrupt:
-                sys.exit(0)
+                success = self.set_dns_servers(config['ipv4'], config['ipv6'])
+                self.root.after(0, lambda: self.hide_loading())
+                if success:
+                    self.root.after(0, lambda: messagebox.showinfo(
+                        "Success", 
+                        f"DNS configuration applied successfully!\n\n"
+                        f"Selected option: {config['name']}\n"
+                        f"Interface: {self.active_interface}"
+                    ))
             except Exception as e:
-                print(f"{Fore.RED}Error: {str(e)}")
-                time.sleep(1)
+                self.root.after(0, lambda: self.hide_loading())
+                self.root.after(0, lambda: messagebox.showerror("Error", str(e)))
+            finally:
+                self.root.after(0, window.destroy)
 
-    def provider_menu(self, provider):
-        while True:
+        threading.Thread(target=thread_target, daemon=True).start()
+
+    def reset_dns(self):
+        def thread_target():
+            self.show_loading("Resetting DNS")
             try:
-                options = self.DNS_OPTIONS[provider]
-                menu_options = {str(k): v for k, v in options.items()}
-                menu_options[str(len(options)+1)] = {'name': 'Back'}
-                menu_options[str(len(options)+2)] = {'name': 'Exit'}
-                
-                self.show_menu(f"{provider.name} DNS Options", menu_options)
-                
-                choice = input("\nSelect DNS option: ").strip()
-                
-                if choice == str(len(options)+1):
-                    return
-                elif choice == str(len(options)+2):
-                    sys.exit(0)
-                elif choice in menu_options:
-                    config = options[int(choice)]
-                    if self.set_dns_servers(config['ipv4'], config['ipv6']):
-                        print(f"{Fore.GREEN}DNS configured successfully!")
-                    input("\nPress Enter to continue...")
-                else:
-                    print(f"{Fore.RED}Invalid choice!")
-                    time.sleep(1)
-            except KeyboardInterrupt:
-                return
+                success = self.set_dns_servers()
+                self.root.after(0, lambda: self.hide_loading())
+                if success:
+                    self.root.after(0, lambda: messagebox.showinfo(
+                        "Success", 
+                        f"DNS reset to default successfully!\n\n"
+                        f"Interface: {self.active_interface}"
+                    ))
             except Exception as e:
-                print(f"{Fore.RED}Error: {str(e)}")
-                time.sleep(1)
+                self.root.after(0, lambda: self.hide_loading())
+                self.root.after(0, lambda: messagebox.showerror("Error", str(e)))
 
-    def exit_with_error(self, message):
-        print(f"{Fore.RED}{message}")
-        input("Press Enter to exit...")
-        sys.exit(1)
+        threading.Thread(target=thread_target, daemon=True).start()
+
+    def on_close(self):
+        self.root.destroy()
+        sys.exit(0)
 
 if __name__ == "__main__":
     try:
-        DNSConfigurator().main_menu()
+        DNSConfiguratorGUI()
     except Exception as e:
-        print(f"{Fore.RED}Fatal error: {str(e)}")
-        input("Press Enter to exit...")
+        messagebox.showerror("Fatal Error", f"Application crash: {str(e)}")
         sys.exit(1)
