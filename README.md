@@ -1,4 +1,4 @@
-<img src="https://portfoliioo.github.io/h/Default/Images/Logo.png">
+<img src="https://raw.githubusercontent.com/portfoliioo/h/refs/heads/main/Deafult/Images/Logo.PNG">
 <br>
 <br>
 # $${\color{orange}Portfolio}$$
