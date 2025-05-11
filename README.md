@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/portfoliioo/h/refs/heads/main/Deafult/Images/Logo.png">
+<img src="https://raw.githubusercontent.com/portfoliioo/h/refs/heads/main/Deafult/Images/Logo.png" alt="Logo">
 <br>
 
 # $${\color{orange}Portfolio}$$
@@ -15,4 +15,4 @@ $${\color{fuchsia}Instagram}$$ 📷: <a href="#"><strong>Instagram</strong></a>
 
 Or scan this QR code
 
-<img src="images/QRCode.png" width="220" height="220">
+<img src="images/QRCode.png" width="220" height="220" alt="QR-Code">
