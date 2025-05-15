@@ -25,8 +25,32 @@ function linkAction() {
 
 navLink.forEach(n => n.addEventListener('click', linkAction));
 
-// Scroll Reveal
+// card flippy
+$(".flip").mouseover(function () {
+	$(this)
+		.find(".card")
+		.addClass("flipped")
+		.mouseleave(function () {
+			$(this).removeClass("flipped");
+		});
+	return false;
+});
 
+// Remove Card Flip small viewport
+var alterClass = function () {
+	var ww = document.body.clientWidth;
+	if (ww < 700) {
+		$(".card-core").removeClass("flip");
+	} else if (ww >= 700) {
+		$(".card-core").addClass("flip");
+	}
+};
+$(window).resize(function () {
+	alterClass();
+});
+
+
+// Scroll Reveal
 const sr = ScrollReveal({
     origin: 'top',
     distance: '80px',
@@ -47,7 +71,9 @@ sr.reveal('.skills-subtitle', {delay: 100} )
 sr.reveal('.skills-text', {delay: 150} )
 sr.reveal('.skills-data', {interval: 200} )
 sr.reveal('.skills-img', {delay: 400} )
-
+sr.reveal('#education', {delay: 400})
+sr.reveal('#work', {delay: 400})
+sr.reveal('.home-slogan', {delay: 400})
 sr.reveal('.work-img', {interval: 200} )
 
 sr.reveal('.contact-input', {interval: 200} )
