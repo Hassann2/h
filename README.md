@@ -6,7 +6,7 @@ Good morning !! <br><br>I'm Hassan, a hobby programmer. This portfolio collects 
 
 <strong>To contact me:</strong>
 
-<strong>$${\color{yellow}Email}$$ 📧:</strong> <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a>
+<strong>$${\color{yellow}Email}$$ 📧:</strong> <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a><span><img src="https://portfoliioo.github.io/h/images/Logo_Black.png" style="width: 54px; height: 54px;"></span>
 <br>
 <br>
 $${\color{fuchsia}Instagram}$$ 📷: <a href="#"><strong>Instagram</strong></a>
