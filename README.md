@@ -2,11 +2,10 @@
 <br>
 
 # $${\color{orange}Portfolio}$$
+<img src="https://portfoliioo.github.io/h/images/Logo.png" style="width: 80px; height: auto;">
 Good morning !! <br><br>I'm Hassan, a hobby programmer. This portfolio collects my most recent projects and my skills. Check out my work and contact me if you want to collaborate.
-
 <strong>To contact me:</strong>
 
-<img src="https://portfoliioo.github.io/h/images/Logo.png" style="width: 80px; height: auto;">
 <strong>$${\color{yellow}Email}$$ 📧:</strong> <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a>
 <br>
 <br>
