@@ -6,8 +6,8 @@ Good morning !! <br><br>I'm Hassan, a hobby programmer. This portfolio collects 
 
 <strong>To contact me:</strong>
 
+<img src="https://portfoliioo.github.io/h/images/Logo.png" style="width: 80px; height: auto;">
 <strong>$${\color{yellow}Email}$$ 📧:</strong> <a href="mailto: allamhassan684@gmail.com"><strong>allamhassan684@gmail.com</strong></a>
-<span><img src="https://portfoliioo.github.io/h/images/Logo.png" style="width: 80px; height: auto;"></span>
 <br>
 <br>
 $${\color{fuchsia}Instagram}$$ 📷: <a href="#"><strong>Instagram</strong></a>
