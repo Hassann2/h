@@ -2,7 +2,7 @@
 <br>
 
 # $${\color{orange}Portfolio}$$
-<img src="https://portfoliioo.github.io/h/images/Logo.png" style="width: 80px; height: auto; margin-top: -20px;">
+<img src="https://portfoliioo.github.io/h/images/Logo.png" style="width: 80px; height: auto; margin-top: -80px;">
 Good morning !! <br><br>I'm Hassan, a hobby programmer. This portfolio collects my most recent projects and my skills. Check out my work and contact me if you want to collaborate.
 <strong>To contact me:</strong>
 
