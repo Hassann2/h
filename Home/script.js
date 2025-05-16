@@ -80,7 +80,7 @@ sr.reveal('.contact-input', {interval: 200} )
 
 // typing text animation script
 var typed = new Typed(".typing", {
-    strings: ["Student","Web Developer", " Game Developer", "Photo Editor", "Video Editor", "Gamer"],
+    strings: ["Student","Web Developer", "Game Developer", "Photo Editor", "Video Editor", "Gamer"],
     typeSpeed: 100,
     backSpeed: 80,
     loop: true
