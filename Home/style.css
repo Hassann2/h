@@ -282,6 +282,9 @@ img {
 }
 
 /* EDUCATION */
+.center-edu{
+    width: 100%;
+}
 .flip {
   -webkit-perspective: 800;
   position: relative;
