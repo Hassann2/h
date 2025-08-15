@@ -1,1 +1,17 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
 
+  Options -Indexes
+
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)/$ $1 [L,R=301]
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.(html|php|aspx|html)$ -f
+  RewriteRule ^(.*)$ $1 [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} ^(.+)\.(html|php|aspx|htm)$
+  RewriteRule ^(.+)\.(html|php|aspx|htm)$ $1 [R=301,L] 
+</IfModule>
