@@ -8,15 +8,35 @@
     <title>Ambient Light</title>
 </head>
 <body>
-    <div class="player">
-        <iframe id="video" controls autoplay loop>
-            <source src="https://youtu.be/ZGRJiFsC2jc" type="video/webm">
-        </iframe>
+    <div class="upload-section">
+        <div class="instructions">
+            <h2>🎬 Carica il tuo video per l'effetto Ambient Light</h2>
+            <p>Seleziona un file video (MP4, WebM, AVI, MOV) per iniziare</p>
+        </div>
+        
+        <div class="file-input-wrapper">
+            <input type="file" id="videoFile" class="file-input" accept="video/*">
+            <label for="videoFile" class="file-label">📁 Scegli Video</label>
+        </div>
+        
+        <div class="file-name" id="fileName"></div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Caricamento video...</p>
+        </div>
+    </div>
+
+    <div class="player" id="player">
+        <video id="video" controls autoplay loop muted>
+            Il tuo browser non supporta il tag video.
+        </video>
         <canvas id="light"></canvas>
     </div>
-    <div class="container">
-        <button class="amb_l_btn_a">Activate Ambient Light</button>
-        <button class="amb_l_btn_d">Deactivate Ambient Light</button>
+    
+    <div class="controls" id="controls">
+        <button class="amb_l_btn_a" id="activateBtn">✨ Attiva Ambient Light</button>
+        <button class="amb_l_btn_d" id="deactivateBtn">❌ Disattiva Ambient Light</button>
     </div>
     <script src="https://ihassan.com/Home/Projects/Websites/Light/script.js"></script>
     <script src="https://ihassan.com/remove_extension.js" crossorigin="anonymous"></script>
