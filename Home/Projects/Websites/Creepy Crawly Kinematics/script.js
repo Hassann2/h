@@ -53,8 +53,8 @@ document.addEventListener("mousemove", function(event) {
 //Sets up canvas
 var canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
-canvas.width = Math.max(window.innerWidth, window.innerWidth);
-canvas.height = Math.max(window.innerWidth, window.innerWidth);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 canvas.style.position = "absolute";
 canvas.style.left = "0px";
 canvas.style.top = "0px";
@@ -567,4 +567,29 @@ class Segment {
     legNum,
     Math.floor(4 + Math.random() * legNum * 8)
 );
-  
+
+// Touch events
+document.addEventListener("touchstart", function(event) {
+    event.preventDefault();
+    var touch = event.touches[0];
+    Input.mouse.x = touch.clientX;
+    Input.mouse.y = touch.clientY;
+    Input.mouse.left = true;
+});
+
+document.addEventListener("touchmove", function(event) {
+    event.preventDefault();
+    var touch = event.touches[0];
+    Input.mouse.x = touch.clientX;
+    Input.mouse.y = touch.clientY;
+});
+
+document.addEventListener("touchend", function(event) {
+    event.preventDefault();
+    Input.mouse.left = false;
+});
+
+window.addEventListener("resize", ()=>{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
