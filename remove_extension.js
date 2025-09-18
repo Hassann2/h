@@ -51,10 +51,10 @@
         if (after - before > 100) {
             if (!consoleOpen) {
                 consoleOpen = true;
-                showCustomMessage('Console detected! You have opened the development tools.');
             }
         } else {
             consoleOpen = false;
         }
     }, 1000);
 })();
+
