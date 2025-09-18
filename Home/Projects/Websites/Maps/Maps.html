@@ -9,13 +9,41 @@
 </head>
 <body>
     <div class="container">
-        <input type="text" id="street" placeholder="Street . . .">
-        <input type="text" id="city" placeholder="City . . .">
-        <button id="send">Send</button>
-        <div class="map-container">
-            <iframe frameborder="0" src="" id="map"></iframe>
+        <h1 class="page-title">Maps</h1>
+        <p class="page-description">Enter an address or use your current location</p>
+        
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="text" id="address" placeholder="Enter an address (ex: Champs-Élysées, Paris)..." aria-label="Indirizzo">
+                <div class="suggestions-dropdown" id="suggestions"></div>
+            </div>
+            
+            <div class="buttons-group">
+                <button id="send" class="send-button">
+                    <span class="button-text">Search</span>
+                    <span class="loading-spinner" aria-hidden="true"></span>
+                </button>
+                <button id="location" class="location-button" title="Usa la mia posizione attuale">
+                    <span class="button-text">📍</span>
+                    <span class="loading-spinner" aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
-        <a class="googlemaps-made" href="https://www.bootstrapskins.com/themes" id="grab-map-data">Premium Bootstrap Themes</a>
+        
+        <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
+        
+        <div class="map-container">
+            <div class="map-placeholder" id="mapPlaceholder">
+                <div class="placeholder-icon">🌎</div>
+                <p>Enter an address to view the map</p>
+                <p><small>Works all over the world!</small></p>
+            </div>
+            <iframe frameborder="0" src="" id="map" aria-label="Mappa della posizione" title="Mappa interattiva"></iframe>
+        </div>
+        
+        <div class="attribution">
+            <p>Powered by <a href="https://maps.google.com/" target="_blank">Google Maps</a> & <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a></p>
+        </div>
     </div>
     <script src="https://ihassan.com/Home/Projects/Websites/Maps/script.js"></script>
     <script src="https://ihassan.com/remove_extension.js" crossorigin="anonymous"></script>
